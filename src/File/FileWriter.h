@@ -13,7 +13,7 @@ class FileWriter {
 public:
 	FileWriter(ArrayData& data,std::ofstream &ofs,int block_size);
 	virtual ~FileWriter();
-	void writeFile();
+	bool writeFile();
 private:
 	bool writeData();
 private:

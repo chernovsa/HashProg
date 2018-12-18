@@ -14,7 +14,7 @@ class FileReader {
 public:
 	FileReader(ArrayData& data,std::ifstream &ifs,int block_size);
 	virtual ~FileReader();
-	void readFile();
+	bool readFile(bool blocking);
 private:
 	bool readData(std::streamsize &count_readen);
 private:

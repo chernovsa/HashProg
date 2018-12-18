@@ -29,9 +29,9 @@ bool FileReader::readData(std::streamsize &count_readen){
 	if (count_readen>0)
 	{
 		data_.insert(data_.end(),buffer,buffer+count_readen);
-//		for(auto hex : buffer)
-//			printf("%x ",(unsigned char)hex);
-//		printf("\n");
+		for(auto hex : buffer)
+			printf("%x ",(unsigned char)hex);
+		printf("\n");
 	}
 	if (!ifs_)
 	{
@@ -39,10 +39,19 @@ bool FileReader::readData(std::streamsize &count_readen){
 	}
 	return true;
 }
-void FileReader::readFile(){
+bool FileReader::readFile(bool blocking){
 	std::streamsize count_readen=0;
-	while(readData(count_readen)){
-		std::cout<<" count_readen="<<count_readen<<" total="<<data_.size()<<std::endl;
+	bool res=true;
+	if (!blocking)
+	{
+		res=readData(count_readen);
+	}
+	else
+	{
+		while(readData(count_readen)){
+			std::cout<<" count_readen="<<count_readen<<" total="<<data_.size()<<std::endl;
+		}
 	}
 	std::cout<<"total="<<data_.size()<<std::endl;
+	return res;
 }

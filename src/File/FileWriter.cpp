@@ -22,7 +22,11 @@ FileWriter::~FileWriter() {
 
 bool FileWriter::writeData(){
 
+	if (data_.size()<0)
+		return false;
+
 	ofs_.write((char*)data_.data(),data_.size());
+	data_.clear();
 
 	if (!ofs_)
 	{
@@ -30,7 +34,7 @@ bool FileWriter::writeData(){
 	}
 	return true;
 }
-void FileWriter::writeFile(){
-	std::streamsize count_readen=0;
-	writeData();
+bool FileWriter::writeFile(){
+
+	return writeData();
 }
