@@ -27,7 +27,7 @@ void ProcessingPerformer::process(){
 	if (!input_data_.size())
 		return;
 	for(auto value:input_data_){
-		if (count==block_size_)
+        if (count == (block_size_-1))
 		{
 			crc&=0x55;
 			output_data_.push_back(crc);
@@ -41,6 +41,7 @@ void ProcessingPerformer::process(){
 			count++;
 		}
 	}
+    input_data_.clear();
 	//finish last part
 	if (count && count<block_size_)
 	{

@@ -15,15 +15,20 @@
 #include "Worker/WriteWorker.h"
 #include "Worker/ProcessingWorker.h"
 #include <thread>
+#include <exception>
 using namespace std;
-using HashException = std::string;
+class HashException :public std::runtime_error{
+    using std::runtime_error::runtime_error;
+};
+const char* INPUT_NAME="out.pcap";
+const char* OUTPUT_NAME="wout.pcap";
 int main() {
-	std::ifstream input_file("out.pcap",std::ifstream::binary);
-	std::ofstream output_file("wout.pcap",std::ifstream::binary);
+    std::ifstream input_file(INPUT_NAME,std::ifstream::binary);
+    std::ofstream output_file(OUTPUT_NAME,std::ifstream::binary);
 	  if (!input_file)
-		  throw HashException("Cant read file");
+          throw HashException("Cant read file "+std::string(INPUT_NAME));
 	  if (!output_file)
-		  throw HashException("Cant write to file");
+          throw HashException("Cant write to file "+std::string(OUTPUT_NAME));
 	    // get length of file:
 	  input_file.seekg (0, input_file.end);
 	  streampos length = input_file.tellg();
@@ -31,7 +36,7 @@ int main() {
 	std::cout<<" file size="<<length<<std::endl;
 	ArrayData input_data;
 	ArrayData output_data;
-	int block_size=50;
+    int block_size=10000;
 	FileReader file_reader(input_data,input_file,block_size);
 	FileWriter file_writer(output_data,output_file,block_size);
 	ProcessingPerformer processing_performer(input_data,output_data,block_size);
@@ -59,12 +64,12 @@ int main() {
 		[&performer_worker](){
 			performer_worker.run();
 			}
-			);
+            );
 	std::thread th_write(
-	[&write_worker](){
-			write_worker.run();
+    [&write_worker](){
+            write_worker.run();
 		}
-		);
+        );
 	if (th_read.joinable())
 		th_read.join();
 	if (th_performer.joinable())

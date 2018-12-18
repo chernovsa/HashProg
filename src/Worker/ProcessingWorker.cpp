@@ -34,7 +34,7 @@ void ProcessingWorker::run(){
 			slave_data_.master_finished_=true;
 			break;
 		}
-		master_data_.cv_.wait(lck);
+        master_data_.cv_.wait(lck);
 		performer_.process();
 		CVLock slave_cv(slave_data_.cv_);
 	}
