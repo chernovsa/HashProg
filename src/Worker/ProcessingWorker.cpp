@@ -37,11 +37,17 @@ void ProcessingWorker::run(){
 			slave_data_.cv_.notify_one();
 			break;
 		}
-		printf("performer_wait\n");
-        master_data_.cv_.wait(lck);
-        printf("performer_process\n");
-		if (performer_.process())
-			slave_data_.cv_.notify_one();
+			while(!master_data_.master_finished_)
+		{
+			printf("performer_wait\n");
+			master_data_.cv_.wait(lck);
+			printf("performer_process\n");
+			if (performer_.process())
+			{
+				slave_data_.cv_.notify_one();
+				break;
+			}
+		}
 	}
 }
 
