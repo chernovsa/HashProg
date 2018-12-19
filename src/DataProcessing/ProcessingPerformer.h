@@ -14,7 +14,7 @@ class ProcessingPerformer {
 public:
 	ProcessingPerformer(ArrayData &input_data,ArrayData &output_data,int block_size);
 	virtual ~ProcessingPerformer();
-	void process();
+	bool process();
 private:
 	ArrayData &input_data_;
 	ArrayData &output_data_;

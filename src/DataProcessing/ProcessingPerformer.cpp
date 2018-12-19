@@ -21,11 +21,11 @@ ProcessingPerformer::~ProcessingPerformer() {
 	// TODO Auto-generated destructor stub
 }
 
-void ProcessingPerformer::process(){
+bool ProcessingPerformer::process(){
 	uint8_t crc=0;
 	int count=0;
 	if (!input_data_.size())
-		return;
+		return false;
 	for(auto value:input_data_){
         if (count == (block_size_-1))
 		{
@@ -50,4 +50,5 @@ void ProcessingPerformer::process(){
 		printf("last part crc=%x\n",crc);
 		crc=0;
 	}
+	return true;
 }

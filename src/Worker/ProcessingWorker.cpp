@@ -7,6 +7,7 @@
 
 #include <Worker/ProcessingWorker.h>
 #include "ServiceTypes.h"
+#include <cstdio>
 ProcessingWorker::ProcessingWorker(ProcessingPerformer& performer,CriticalData &master_data,CriticalData &slave_data):
 	performer_(performer),
 	master_data_(master_data),
@@ -24,19 +25,23 @@ ProcessingWorker::~ProcessingWorker() {
 
 void ProcessingWorker::run(){
 	while(alive_){
+		printf("performer_before mtx\n");
 		std::unique_lock<std::mutex> lck(master_data_.mtx_);
+		printf("performer_get mtx\n");
 		std::unique_lock<std::mutex> slave_lck(slave_data_.mtx_);
 		if (master_data_.master_finished_)
 		{
 			//write last part of file
 			performer_.process();
-			CVLock slave_cv(slave_data_.cv_);
 			slave_data_.master_finished_=true;
+			slave_data_.cv_.notify_one();
 			break;
 		}
+		printf("performer_wait\n");
         master_data_.cv_.wait(lck);
-		performer_.process();
-		CVLock slave_cv(slave_data_.cv_);
+        printf("performer_process\n");
+		if (performer_.process())
+			slave_data_.cv_.notify_one();
 	}
 }
 

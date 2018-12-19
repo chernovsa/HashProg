@@ -36,7 +36,7 @@ int main() {
 	std::cout<<" file size="<<length<<std::endl;
 	ArrayData input_data;
 	ArrayData output_data;
-    int block_size=10000;
+    int block_size=100;
 	FileReader file_reader(input_data,input_file,block_size);
 	FileWriter file_writer(output_data,output_file,block_size);
 	ProcessingPerformer processing_performer(input_data,output_data,block_size);
@@ -55,19 +55,20 @@ int main() {
 	WriteWorker write_worker(file_writer,slave_mtx,slave_cv,slave_read_finished);
 	ProcessingWorker performer_worker(processing_performer,master_data,slave_data);
 
-	std::thread th_read(
-[&read_worker](){
-		read_worker.run();
-	}
-	);
+
 	std::thread th_performer(
 		[&performer_worker](){
 			performer_worker.run();
 			}
             );
+	std::thread th_read(
+	[&read_worker](){
+			read_worker.run();
+		}
+		);
 	std::thread th_write(
     [&write_worker](){
-            write_worker.run();
+           // write_worker.run();
 		}
         );
 	if (th_read.joinable())
