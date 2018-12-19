@@ -36,7 +36,7 @@ int main() {
 	std::cout<<" file size="<<length<<std::endl;
 	ArrayData input_data;
 	ArrayData output_data;
-    int block_size=100;
+    int block_size=50;
 	FileReader file_reader(input_data,input_file,block_size);
 	FileWriter file_writer(output_data,output_file,block_size);
 	ProcessingPerformer processing_performer(input_data,output_data,block_size);
