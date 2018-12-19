@@ -55,22 +55,23 @@ int main() {
 	WriteWorker write_worker(file_writer,slave_mtx,slave_cv,slave_read_finished);
 	ProcessingWorker performer_worker(processing_performer,master_data,slave_data);
 
+	std::thread th_read(
+			[&read_worker](){
+		read_worker.run();
+	}
+	);
 
 	std::thread th_performer(
-		[&performer_worker](){
-			performer_worker.run();
-			}
-            );
-	std::thread th_read(
-	[&read_worker](){
-			read_worker.run();
-		}
-		);
+			[&performer_worker](){
+		performer_worker.run();
+	}
+	);
+
 	std::thread th_write(
-    [&write_worker](){
-           // write_worker.run();
-		}
-        );
+			[&write_worker](){
+		 write_worker.run();
+	}
+	);
 	if (th_read.joinable())
 		th_read.join();
 	if (th_performer.joinable())
